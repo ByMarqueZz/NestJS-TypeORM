@@ -7,13 +7,17 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateProfileDTO } from './dto/create-profile.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -23,6 +27,7 @@ export class UsersController {
     return this.usersService.createUser(newUser);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('all')
   getUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
